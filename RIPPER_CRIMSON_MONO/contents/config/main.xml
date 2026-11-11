@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name="" />
+  <group name="General">
+    <entry name="VideoPath" type="String"><default></default></entry>
+    <entry name="VideoEnabled" type="Bool"><default>false</default></entry>
+    <entry name="CenterWidth" type="Int"><default>38</default></entry>
+    <entry name="PanelOpacity" type="Int"><default>70</default></entry>
+    <entry name="ShowMusic" type="Bool"><default>true</default></entry>
+    <entry name="ShowNetwork" type="Bool"><default>true</default></entry>
+    <entry name="ShowCalendar" type="Bool"><default>true</default></entry>
+    <entry name="ShowPerformance" type="Bool"><default>true</default></entry>
+  </group>
+</kcfg>

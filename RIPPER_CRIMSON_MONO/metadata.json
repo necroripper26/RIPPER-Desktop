@@ -1,0 +1,15 @@
+{
+  "KPlugin": {
+    "Id": "org.ripper.crimson.mono",
+    "Name": "RIPPER CRIMSON — Monochrome",
+    "Description": "Fondo cinematografico con video configurable, reloj, telemetria y musica para KDE Plasma 6",
+    "Version": "1.0.0",
+    "License": "MIT",
+    "Category": "Wallpaper",
+    "ServiceTypes": [
+      "Plasma/Wallpaper"
+    ]
+  },
+  "KPackageStructure": "Plasma/Wallpaper",
+  "X-Plasma-API-Minimum-Version": "6.0"
+}
