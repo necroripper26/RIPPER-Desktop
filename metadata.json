@@ -1,0 +1,12 @@
+{
+  "KPlugin": {
+    "Id": "org.ripper.desktop.v3",
+    "Name": "RIPPER Desktop V3 Monochrome",
+    "Description": "Gothic monochrome desktop with live system and media stats",
+    "Version": "3.0.0",
+    "Category": "Wallpaper",
+    "ServiceTypes": ["Plasma/Wallpaper"]
+  },
+  "KPackageStructure": "Plasma/Wallpaper",
+  "X-Plasma-API-Minimum-Version": "6.0"
+}

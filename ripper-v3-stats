@@ -1,0 +1,78 @@
+#!/usr/bin/env python3
+"""Small, read-only local metrics + MPRIS query; called by a Plasma wallpaper."""
+import json
+import subprocess
+import time
+
+try:
+    import psutil
+except ImportError:
+    psutil = None
+
+
+def player(*args):
+    try:
+        return subprocess.check_output(
+            ["playerctl", *args], stderr=subprocess.DEVNULL,
+            text=True, timeout=1.5
+        ).strip()
+    except (FileNotFoundError, subprocess.SubprocessError, TimeoutError):
+        return ""
+
+
+def gpu_load():
+    for idx in range(16):
+        path = f"/sys/class/drm/card{idx}/device/gpu_busy_percent"
+        try:
+            with open(path, encoding="utf-8") as f:
+                return min(100, max(0, int(f.read().strip())))
+        except (OSError, ValueError):
+            continue
+    return None
+
+
+def temps():
+    if psutil is None:
+        return None
+    try:
+        sensors = psutil.sensors_temperatures(fahrenheit=False)
+    except (AttributeError, OSError):
+        return None
+    names = []
+    for group, entries in sensors.items():
+        for item in entries:
+            key = (group + ' ' + item.label).lower()
+            if any(t in key for t in ('tctl', 'tdie', 'package id', 'cpu', 'core 0')):
+                if -20 <= item.current <= 120:
+                    names.append(item.current)
+    return int(round(max(names))) if names else None
+
+
+def get():
+    data = {'cpu': None, 'ram': None, 'gpu': gpu_load(), 'disk': None,
+            'temp': temps(), 'uptime': None, 'artist': '', 'title': '',
+            'status': '', 'progress': 0}
+    if psutil:
+        try:
+            data['cpu'] = int(round(psutil.cpu_percent(interval=0.1)))
+            data['ram'] = int(round(psutil.virtual_memory().percent))
+            data['disk'] = int(round(psutil.disk_usage('/').percent))
+            data['uptime'] = int((time.time() - psutil.boot_time()) / 3600)
+        except (OSError, ValueError):
+            pass
+    status = player('status')
+    if status in ('Playing', 'Paused'):
+        data['status'] = status
+        data['artist'] = player('metadata', '--format', '{{ artist }}')[:120]
+        data['title'] = player('metadata', '--format', '{{ title }}')[:150]
+        try:
+            pos = float(player('position'))
+            length_microsec = float(player('metadata', '--format', '{{ mpris:length }}'))
+            if length_microsec > 0:
+                data['progress'] = max(0, min(1, pos / (length_microsec / 1000000.0)))
+        except (ValueError, ZeroDivisionError):
+            pass
+    return data
+
+
+print(json.dumps(get(), ensure_ascii=False, separators=(',', ':')))
